@@ -67,3 +67,9 @@ ggplot(subset(claims.clean, num.days == 0 & Paid_amount > 0), aes(x = from.month
 
 ggplot(subset(claims.clean, num.days > 0 & num.days < 365), aes(x = Revenue, y = log(Paid_amount))) + 
   geom_point(alpha = .9, size = .8) -> p
+
+
+
+p = ggplot(claims.clean, aes(x = num.days)) + geom_histogram(fill = "white", size=1) + geom_rug(aes(y=-2), position="jitter", sides="b", alpha = .1)
+
+p = ggplot(claims.clean, aes(x = num.days, y = Paid_amount)) + geom_point(alpha = .5) +  geom_rug(alpha = .1)
