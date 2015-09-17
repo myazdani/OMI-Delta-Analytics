@@ -1,6 +1,8 @@
 ## top-patient-analysis.R
 ##
 
+library(ggplot2)
+library(plotly)
 setwd("~/Documents/OMI/Delta/")
 
 claims = read.csv("./data/cleanData/claims.csv", header = TRUE, stringsAsFactors = FALSE)
@@ -40,6 +42,8 @@ patient.freq = patient.freq[order(patient.freq$Freq, decreasing = TRUE),]
 
 proc.freq = as.data.frame(table(claims.clean$Hcpcscpt4))
 proc.freq = as.data.frame(proc.freq[order(proc.freq$Freq, decreasing = TRUE),])
+ggplot(proc.freq, aes(x = c(1:nrow(proc.freq)), y = Freq, label = Var1)) + geom_text() -> p
+ggplotly(p)
 
 library(dplyr)
 
@@ -50,5 +54,11 @@ claims.clean %>%
             num.patients = length(unique(Ee_NUM))) %>%
   as.data.frame() -> res
 
-library(ggplot2)
-library(plotly)
+res$num.records.per.patient = res$num.records/res$num.patients
+res = res[order(res$num.records.per.patient, decreasing = TRUE), ]
+
+ggplot(res, aes(x = c(1:nrow(res)), y = num.records.per.patient, label = Hcpcscpt4)) + 
+  geom_text() -> p
+
+
+ggplot(res, aes(x = num.records/num.patients, y = total.Paid, size = num.patients, label = Hcpcscpt4)) + geom_text() -> p
